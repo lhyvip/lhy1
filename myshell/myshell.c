@@ -8,7 +8,6 @@
 #define MAX_DIR_NAME 255
 
 
-//help帮助文档
 int helps(char *inputs[],int i)
 {
 
@@ -20,22 +19,22 @@ int helps(char *inputs[],int i)
     }
     else if (strcmp(inputs[1],"pwd")==0)
     {
-        printf("pwd:打印当前绝对路径\n");
+        printf("pwd:鎵撳嵃褰撳墠缁濆璺緞\n");
         return 1;
     }
     else if(strcmp(inputs[1],"cd")==0)
     {
-        printf("cd:可以切换当前目录\n");
+        printf("cd:鍙互鍒囨崲褰撳墠鐩綍\n");
         return 1;
     }
     else if(strcmp(inputs[1],"exit")==0)
     {
-        printf("exit:退出shell\n");
+        printf("exit:閫�鍑簊hell\n");
         return 1;
     }
     else if(strcmp(inputs[1],"echo")==0)
     {
-        printf("echo:显示并换行\n");
+        printf("echo:鏄剧ず骞舵崲琛孿n");
         return 1;
     }
     return 0;
@@ -43,9 +42,6 @@ int helps(char *inputs[],int i)
 
 
 
-//编写一个外置命令函数专门写内置指令
-//返回值为1时为成功执行外置指令
-//返回0时为执行失败不是外置命令
 int build_out_command(char *inputs[],int i)
 {
     char path[]="./comd/";
@@ -63,7 +59,7 @@ int build_out_command(char *inputs[],int i)
     }
     else if(rc==0)
     {
-//关掉读
+
         close(fd[0]);
         if(execv(strcat(path,inputs[0]),inputs)<0)    //strcat(path,inputs[0])
         {
@@ -75,7 +71,7 @@ int build_out_command(char *inputs[],int i)
         }
         close(fd[1]);
         exit(0);
-//结束子进程
+
     }
     else if(rc>0)
     {
@@ -96,19 +92,15 @@ int build_out_command(char *inputs[],int i)
 
 
 
-//编写一个内置命令函数专门写内置指令
-//返回值为1时为成功执行内置指令
-//返回0时为不是内置命令
 int build_in_command(char cmdstring[],char *inputs[],int i)
 {
-//1.实现exit退出
-//printf("inputs[0]=%s",inputs[0]);
+
     if(strcmp(inputs[0],"exit")==0)
     {
         printf("Bye.\n");
         exit(0);
     }
-//2.实现pwd返回目录
+
     else if(strcmp(inputs[0],"pwd")==0)
     {
         char path[MAX_DIR_NAME];
@@ -116,7 +108,7 @@ int build_in_command(char cmdstring[],char *inputs[],int i)
         printf("%s\n",getcwd(path,MAX_DIR_NAME));
         return 1;
     }
-//3.实现cd改变目录
+
     else if(strcmp(inputs[0],"cd")==0)
     {
         if(chdir(inputs[1])==0)
@@ -125,7 +117,7 @@ int build_in_command(char cmdstring[],char *inputs[],int i)
         }
 
     }
-//4.echo显示并换行
+
     else if(strcmp(inputs[0],"echo")==0)
     {
         char *buf1=cmdstring;
@@ -146,7 +138,7 @@ int build_in_command(char cmdstring[],char *inputs[],int i)
         return 1;
 
     }
-//help帮助文档
+
     else if(strcmp(inputs[0],"help")==0)
     {
         int i1= helps(inputs,i);
@@ -159,7 +151,7 @@ int build_in_command(char cmdstring[],char *inputs[],int i)
 }
 
 
-//命令提示符
+
 void attention()
 {
     struct passwd *pwd1;
@@ -191,8 +183,7 @@ void attention()
 
 
 
-//解析指令 例如ls -l  ，将该指令分为ls和-l两个字符串分别存储在inputs字符串数数组
-//返回值是存储的个数最后一位为NULL一共i+1个
+
 int parsecommand(char buf[],char *inputs[])
 {
     bzero(inputs,MAX_CMD);
@@ -234,23 +225,19 @@ int parsecommand(char buf[],char *inputs[])
 
     return in;
 
-//一共有in+1个字符串,最后一位NULL
+
 
 }
 
 
-//整体执行函数分为内部命令和外部命令
-//内部命令直接调用函数执行就好
-//外部命令自己编写在另一个文件，通过gcc编译
-//在该函数里通过exec家族函数调用执行
+
 int  eval(char cmdstring[])
 {
     char *inputs[MAX_CMD];
     char buf[MAX_CMD];
     strcpy(buf,cmdstring);
     int i=parsecommand(buf,inputs);
-//下面实现一些功能
-//调用内置外置函数
+
 
     int returnin=build_in_command(cmdstring,inputs,i);
     if(returnin==0)
@@ -268,8 +255,7 @@ int  eval(char cmdstring[])
 
 
 
-//main函数通过循环不断接受用户数据
-//调用eval功能函数实现
+
 int main(int argc,char *argv[])
 {
     char cmdstring[MAX_CMD];
@@ -278,14 +264,14 @@ int main(int argc,char *argv[])
     {
         attention();
         fflush(stdout);
-//读取输入流
+
         fgets(cmdstring,MAX_CMD,stdin);
-//如果没有输入从新开始
+
         if(cmdstring[0]=='\n')
         {
             continue;
         }
-//去掉末尾的‘\n’换为‘\0’
+
         int i=0;
         for(i; cmdstring[i]!='\n'; i++)
         {
